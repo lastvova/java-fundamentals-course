@@ -26,13 +26,12 @@ public class HashTable<K, V> {
         }
 
         int index = getIndex(key);
-        if (array[index] == null) {
+        var current = array[index];
+        if (current == null) {
             array[index] = new Node<>(key, value);
             size++;
             return null;
         }
-
-        var current = array[index];
         return putValue(key, value, current);
     }
 
