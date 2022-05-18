@@ -55,13 +55,13 @@ public class HashTable<K, V> {
     @SuppressWarnings({"unchecked", "rawtype"})
     private Node<K, V>[] resizeArray() {
         size = 0;
-        var newArray = new HashTable(array.length * 2);
+        var newArray = new Node[array.length * 2];
         for (var oldNode : array) {
             if (oldNode != null) {
-                newArray.put(oldNode.key, oldNode.value);
+                put(oldNode.key, oldNode.value);
             }
         }
-        return newArray.array;
+        return newArray;
     }
 
 
