@@ -1,9 +1,13 @@
 package com.bobocode;
 
+import java.util.Objects;
+import java.util.Stack;
+
 public class DemoApp {
     public static void main(String[] args) {
         var head = createLinkedList(4, 3, 9, 1);
         printReversedRecursively(head);
+        System.out.println();
         printReversedUsingStack(head);
     }
 
@@ -15,7 +19,16 @@ public class DemoApp {
      * @return head of the list
      */
     public static <T> Node<T> createLinkedList(T... elements) {
-        throw new UnsupportedOperationException("This method should be implemented according to the javadoc"); // todo
+        Objects.requireNonNull(elements);
+        Objects.checkIndex(0, elements.length);
+        Node<T> current = new Node<>(elements[0]);
+        Node<T> head = current;
+
+        for (int i = 1; i < elements.length; i++) {
+            current.next = new Node<>(elements[i]);
+            current = current.next;
+        }
+        return head;
     }
 
     /**
@@ -29,7 +42,14 @@ public class DemoApp {
      * @param <T>  elements type
      */
     public static <T> void printReversedRecursively(Node<T> head) {
-        throw new UnsupportedOperationException("This method should be implemented according to the javadoc"); // todo
+        if (head != null) {
+            printReversedRecursively(head.next);
+            if (head.next == null) {
+                System.out.print(head.element);
+            } else {
+                System.out.print(" -> " + head.element);
+            }
+        }
     }
 
     /**
@@ -43,6 +63,22 @@ public class DemoApp {
      * @param <T>  elements type
      */
     public static <T> void printReversedUsingStack(Node<T> head) {
-        throw new UnsupportedOperationException("This method should be implemented according to the javadoc"); // todo
+        Objects.requireNonNull(head);
+
+        var stack = fillStack(head);
+
+        System.out.print(stack.pop());
+        while (!stack.isEmpty()) {
+            System.out.print(" -> " + stack.pop());
+        }
+    }
+
+    private static <T> Stack<Object> fillStack(Node<T> head) {
+        var stack = new Stack<>();
+        while (head != null) {
+            stack.push(head.element);
+            head = head.next;
+        }
+        return stack;
     }
 }
