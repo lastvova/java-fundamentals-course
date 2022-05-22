@@ -1,6 +1,9 @@
 package com.bobocode;
 
 
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
+
 public class DemoApp {
     public static void main(String[] args) {
         GreetingService helloService = createMethodLoggingProxy(GreetingService.class);
@@ -9,7 +12,7 @@ public class DemoApp {
     }
 
     /**
-     * Creates a proxy of the provided class that logs its method invocations. If a method that 
+     * Creates a proxy of the provided class that logs its method invocations. If a method that
      * is marked with {@link LogInvocation} annotation is invoked, it prints to the console the following statement:
      * "[PROXY: Calling method '%s' of the class '%s']%n", where the params are method and class names accordingly.
      *
@@ -18,6 +21,15 @@ public class DemoApp {
      * @return an instance of a proxy class
      */
     public static <T> T createMethodLoggingProxy(Class<T> targetClass) {
-        throw new UnsupportedOperationException("This method should be implemented.");
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(targetClass);
+        MethodInterceptor methodInterceptor = (o, method, args, methodProxy) -> {
+            if (method.isAnnotationPresent(LogInvocation.class)) {
+                System.out.printf("[PROXY: Calling method '%s' of the class '%s']%n", method.getName(), targetClass.getName());
+            }
+            return methodProxy.invokeSuper(o, args);
+        };
+        enhancer.setCallback(methodInterceptor);
+        return targetClass.cast(enhancer.create());
     }
 }
